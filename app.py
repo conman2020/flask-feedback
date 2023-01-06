@@ -42,13 +42,13 @@ def register_user():
         db.session.add(new_user)
         try:
             db.session.commit()
-            session['username'] = new_user.username
+            session['username'] = new_user.id
             flash('Welcome! Successfully Created Your Account!', "success")
             return redirect(f"/username/{new_user.username}")
         except IntegrityError:
             form.username.errors.append('Username taken.  Please pick another')
             return render_template('register.html', form=form)
-        
+    
 
     return render_template('register.html', form=form)
 @app.route('/username/<username>', methods=["GET", "POST"])
@@ -57,7 +57,7 @@ def users_updated(username):
     if "username" not in session or username != session['username']:
         raise Unauthorized()
 
-    user = User.query.get(user.username)
+    user = User.query.get(username)
 
     
 
@@ -84,8 +84,8 @@ def login():
 
         user = User.login(username, password)  # <User> or False
         if user:
-            session['username'] = user.username
-            return redirect(f"/username/{user.username}")
+            session['username'] = user.id
+            return redirect(f"/username/{user.id}")
         else:
             form.username.errors = ["Invalid username/password."]
             return render_template("login.html", form=form)
