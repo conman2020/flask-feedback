@@ -19,7 +19,7 @@ toolbar = DebugToolbarExtension(app)
 
 @app.route('/')
 def home_page():
-    return render_template('base.html')
+    return redirect("/register")
 
 
 
@@ -27,7 +27,7 @@ def home_page():
 @app.route('/register', methods=['GET', 'POST'])
 def register_user():
     if "username" in session:
-        return redirect("/")
+        return redirect(f"/users/{session['username']}")
 
     form = RegisterUserForm()
     if form.validate_on_submit():
@@ -44,7 +44,7 @@ def register_user():
             db.session.commit()
             session['username'] = new_user.id
             flash('Welcome! Successfully Created Your Account!', "success")
-            return redirect(f"/username/{new_user.username}")
+            return redirect(f"/username/{new_user.id}")
         except IntegrityError:
             form.username.errors.append('Username taken.  Please pick another')
             return render_template('register.html', form=form)
@@ -55,7 +55,7 @@ def register_user():
 def users_updated(username):
     """Show edit form for pet."""
     if "username" not in session or username != session['username']:
-        raise Unauthorized()
+      return redirect("/")
 
     user = User.query.get(username)
 
