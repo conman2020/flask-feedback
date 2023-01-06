@@ -2,6 +2,7 @@ from flask import Flask, render_template, redirect, session, flash
 from flask_debugtoolbar import DebugToolbarExtension
 from models import connect_db, db, User
 from forms import RegisterUserForm, LoginForm
+from sqlalchemy.exc import IntegrityError
 
 
 app = Flask(__name__)
@@ -19,7 +20,7 @@ toolbar = DebugToolbarExtension(app)
 
 @app.route('/')
 def home_page():
-    return redirect("/register")
+    return render_template("base.html")
 
 
 
@@ -42,7 +43,7 @@ def register_user():
         db.session.add(new_user)
         try:
             db.session.commit()
-            session['username'] = new_user.id
+            session['id'] = new_user.id
             flash('Welcome! Successfully Created Your Account!', "success")
             return redirect(f"/username/{new_user.id}")
         except IntegrityError:
@@ -54,7 +55,7 @@ def register_user():
 @app.route('/username/<id>', methods=["GET", "POST"])
 def users_updated(id):
     """Show edit form for pet."""
-    if "id" not in session or id != session['id']:
+    if "id" not in session:
       return redirect("/")
 
     user = User.query.get(id)
@@ -68,7 +69,7 @@ def users_updated(id):
 def logout():
     """Logout route."""
 
-    session.pop("username")
+    session.pop("id")
     return redirect("/")
 
 
