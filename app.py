@@ -54,7 +54,7 @@ def register_user():
 @app.route('/username/<username>', methods=["GET", "POST"])
 def users_updated(username):
     """Show edit form for pet."""
-    if "username" not in session or username != session['username']:
+    if "id" not in session or username != session['username']:
       return redirect("/")
 
     user = User.query.get(username)
@@ -84,8 +84,8 @@ def login():
 
         user = User.login(username, password)  # <User> or False
         if user:
-            session['username'] = user.id
-            return redirect(f"/username/{user.id}")
+            session['username'] = user.username
+            return redirect(f"/username/{user.username}")
         else:
             form.username.errors = ["Invalid username/password."]
             return render_template("login.html", form=form)
