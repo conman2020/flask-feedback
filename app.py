@@ -1,7 +1,7 @@
 from flask import Flask, render_template, redirect, session, flash
 from flask_debugtoolbar import DebugToolbarExtension
-from models import connect_db, db, User
-from forms import RegisterUserForm, LoginForm
+from models import connect_db, db, User, Feedback
+from forms import RegisterUserForm, LoginForm, DeleteForm, FeedbackForm
 from sqlalchemy.exc import IntegrityError
 
 
@@ -27,8 +27,8 @@ def home_page():
 
 @app.route('/register', methods=['GET', 'POST'])
 def register_user():
-    # if "username" in session:
-    #     return redirect(f"/username/{session['username']}")
+    if "id" in session:
+        return redirect(f"/username/{session['id']}")
 
     form = RegisterUserForm()
     if form.validate_on_submit():
@@ -59,10 +59,11 @@ def users_updated(id):
       return redirect("/")
 
     user = User.query.get(id)
+    form=DeleteForm()
 
     
 
-    return render_template("/username/details.html", username=user)
+    return render_template("/username/details.html", user=user, form=form)
 
 
 @app.route("/logout")
@@ -99,3 +100,56 @@ def secret():
 
     
     return render_template("secret.html")
+
+
+
+
+@app.route("/<username>/<id>/feedback/new",  methods=["GET", "POST"])
+def new_feedback(username, id):
+    """new feedback route."""
+    if "id" not in session:
+      return redirect("/")
+
+    user = User.query.get(id)
+    form = FeedbackForm()
+
+    if form.validate_on_submit():
+        title = form.title.data
+        content = form.content.data
+
+        feedback = Feedback(
+            title=title,
+            content=content,
+            username=username,
+        )
+
+        db.session.add(feedback)
+        db.session.commit()
+        flash('Message added', "Post Added")
+
+    
+    return render_template("/feedback/new.html", form=form, user=user)
+
+
+
+
+@app.route("/<username>/<id>/feedback/<feedback_id>/update", methods=["GET", "POST"])
+def update_feedback(username, id, feedback_id):
+    """Show update-feedback form and process it."""
+
+    feedback = Feedback.query.get(feedback_id)
+
+    if "id" not in session :
+        raise Unauthorized()
+    user = User.query.get(id)
+
+    form = FeedbackForm(obj=feedback)
+
+    if form.validate_on_submit():
+        feedback.title = form.title.data
+        feedback.content = form.content.data
+        db.session.commit()
+    
+   
+
+    return render_template("/feedback/update.html", form=form, feedback=feedback, user=user)
