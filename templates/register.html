@@ -14,7 +14,7 @@ Register User
 
 <form method="POST">
 
-  <!-- {{form.hidden_tag()}}
+  {{form.hidden_tag()}}
 
   {% for field in form.errors %}
   <div class="alert alert-danger">{{ field }}:
@@ -24,7 +24,7 @@ Register User
       {% endfor %}
     </ul>
   </div>
-  {% endfor %} -->
+  {% endfor %}
 
   {% for field in form if field.widget.input_type != 'hidden' %}
 

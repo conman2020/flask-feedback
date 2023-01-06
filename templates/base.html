@@ -11,10 +11,13 @@
     <div class="container">
       <a href="/" class="navbar-brand text-light">Flask Feedback</a>
       <ul class="nav navbar-nav flex-row float-right">
-        {% if session['user_id'] %}
+        {% if session['username'] %}
         <li class="nav-item">
           <a class="nav-link pr-3 text-light" href="/logout">Logout</a>
         </li>
+        <li class="nav-item">
+            <a class="nav-link pr-3 text-light" href="/secret">Secret</a>
+          </li>
         {% else %}
         <li class="nav-item">
           <a class="nav-link pr-3 text-light" href="/login">Login</a>
@@ -26,7 +29,9 @@
       </ul>
     </div>
   </nav>
-
+  {% block content %}
+  <!-- put the content here -->
+  {% endblock %}
 </body>
 
 </html>
