@@ -26,8 +26,8 @@ def home_page():
 
 @app.route('/register', methods=['GET', 'POST'])
 def register_user():
-    if "username" in session:
-        return redirect(f"/username/{session['username']}")
+    # if "username" in session:
+    #     return redirect(f"/username/{session['username']}")
 
     form = RegisterUserForm()
     if form.validate_on_submit():
@@ -51,13 +51,13 @@ def register_user():
     
 
     return render_template('register.html', form=form)
-@app.route('/username/<username>', methods=["GET", "POST"])
-def users_updated(username):
+@app.route('/username/<id>', methods=["GET", "POST"])
+def users_updated(id):
     """Show edit form for pet."""
-    if "id" not in session or username != session['username']:
+    if "id" not in session or id != session['id']:
       return redirect("/")
 
-    user = User.query.get(username)
+    user = User.query.get(id)
 
     
 
@@ -84,8 +84,8 @@ def login():
 
         user = User.login(username, password)  # <User> or False
         if user:
-            session['username'] = user.username
-            return redirect(f"/username/{user.username}")
+            session['id'] = user.id
+            return redirect(f"/username/{user.id}")
         else:
             form.username.errors = ["Invalid username/password."]
             return render_template("login.html", form=form)
