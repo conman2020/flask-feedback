@@ -1,0 +1,42 @@
+{% extends 'base.html'  %}
+
+
+{% block title %}
+Register User
+
+{% endblock %}
+
+
+{% block content %}
+<!-- put the content here -->
+<h1>{{user.first_name}}</h1>
+
+<ul>
+    {% for feedback in user.feedback %}
+
+    <li>
+      {{ feedback.title }}
+      <small>{{ feedback.content }}</small>
+    </li>
+
+    <form>
+        {{form.hidden_tag()}}
+        <button class="btn btn-primary"
+                formmethod="GET"
+                formaction="/{{ user.username }}/{{ user.id }}/feedback/{{ feedback.feedback_id }}/update">
+          Edit
+        </button>
+        <button class="btn btn-danger"
+                formmethod="POST"
+                formaction="/{{ user.username }}/{{ user.id }}/feedback/{{ feedback.feedback_id }}/delete">
+          Delete
+        </button>
+      </form>
+    {% endfor %}
+
+    <p>
+        <a href="/{{ user.username }}/{{ user.id }}/feedback/new" class="btn btn-primary">
+          Add feedback
+        </a>
+      </p>
+{% endblock %}
