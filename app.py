@@ -8,6 +8,7 @@ import os
 
 app = Flask(__name__)
 app.app_context().push()
+from app import routes
 # app.config["SQLALCHEMY_DATABASE_URI"] = "postgresql:///flask_feedback"
 app.config["SQLALCHEMY_DATABASE_URI"] = os.environ.get('DATABASE_URL', "postgresql:///flask_feedback")
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
