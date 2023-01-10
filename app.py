@@ -3,6 +3,7 @@ from flask_debugtoolbar import DebugToolbarExtension
 from models import connect_db, db, User, Feedback
 from forms import RegisterUserForm, LoginForm, DeleteForm, FeedbackForm
 from sqlalchemy.exc import IntegrityError
+from collections.abc import Container
 import os
 
 
